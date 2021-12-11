@@ -17,18 +17,20 @@ app.use(express.json())
 app.use('/public', express.static(__dirname + '\\public'))
 
 app.get('/', function(req, res){
-    console.log(req.ip)
+    console.log(Date() + ' ' + req.ip)
     res.sendFile(__dirname + "\\index.html");
 })
 
 app.post('/', function(req, res){
     const urlNumber = req.body['urlNumber']
-    console.log(req.ip + ' : ' + urlNumber)
+    console.log(Date() + ' ' + req.ip + ' : ' + urlNumber)
 
     fs.exists('./public/' + urlNumber, function(exist){
         if(exist){
-            fs.readFile('./public/' + urlNumber + '/page.txt', (err, pages) =>{
-                res.end(pages)
+            fs.readFile('./public/' + urlNumber + '/page.json', (err, data) =>{
+                if (err) throw err;
+                let key = JSON.parse(data);
+                res.json(key)
             })
         }
         else{
@@ -39,14 +41,20 @@ app.post('/', function(req, res){
                 }
                 else{
                     const pages = $('.name').last().text()
-                    const imgUrl = ($('.lazyload').first().attr('data-src')).split('/')[4]
+                    const temp = ($('.lazyload').first().attr('data-src')).split('/')
+                    const imgUrl = temp[4]
+                    const type = temp[5].split('.')[1] 
+                    let key = {
+                        pages: pages,
+                        type: type
+                    }   
 
                     fs.mkdirSync('./public/' + urlNumber)
-                    fs.writeFileSync('./public/' + urlNumber + '/page.txt', pages)
+                    fs.writeFileSync('./public/' + urlNumber + '/page.json', JSON.stringify(key))
                     for(let p=1; p<=parseInt(pages); ++p){
-                        download('https://i.nhentai.net/galleries/' + imgUrl + '/' + p.toString() + '.jpg', './public/' + urlNumber + '/' + p.toString() + '.jpg')
+                        download('https://i.nhentai.net/galleries/' + imgUrl + '/' + p.toString() + '.'+ type, './public/' + urlNumber + '/' + p.toString() + '.' + type)
                     }
-                    res.end(pages)
+                    res.json(key)
                 }
             })
         }

@@ -3,12 +3,14 @@
   <p>請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</p>
   <p>載入需要幾秒，若圖片顯示不全請再送出一次，若持續顯示不全表示你的性癖連電腦都受不了，應該接受治療</p>
   <p>若圖片一直沒有顯示，表示沒這個漫畫，而且我也不會告訴你，你這個馬桶蓋</p>
-  <p>已知bug: <I><strong>只能顯示jpg漫畫</strong></I></p>
+  <p>已知bug: <I><strong>圖片可能顯示不全</strong></I></p>
   <p><strong>{{forbid}}</strong></p>
   <input v-model='num'>
-  <button v-on:click='hi'>送出</button>
+  <button v-on:click='send' v-bind:disabled='isDisabled'>送出</button>
   <p>{{htmls}}</p>
-  <div id='manga'></div>
+  <div id='manga'>
+    <img src='/public/linkstart.PNG'>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -21,9 +23,12 @@ new Vue({
     forbid: '',
     num: '',
     htmls: '\n',
+    isDisabled: false
   },
   methods: {
-      hi: function(){
+      send: function(){
+          this.isDisabled = true
+          
           if(this.num == '228922'){
             this.forbid = '委任幹你娘'
             return
@@ -40,13 +45,15 @@ new Vue({
 
               setTimeout(()=>{
                 let father = document.getElementById('manga')
-                for(let i=1; i<=parseInt(response.data); ++i){
+                for(let i=1; i<=parseInt(response.data.pages); ++i){
                   let page = document.createElement('img')
                   page.setAttribute('id', i.toString())
-                  page.setAttribute('src', '/public/' + this.num + '/' + i.toString() + '.jpg') 
+                  page.setAttribute('src', '/public/' + this.num + '/' + i.toString() + '.' + response.data.type) 
                   father.appendChild(page)
                 }
+                this.isDisabled = false
               }, 5000)
+              
             })
             .catch(response => {
               console.log(response)
