@@ -1,17 +1,20 @@
-<div id="app">
-  <h1>n站快速巡禮v1</h1>
-  <p>請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</p>
-  <p>載入需要幾秒，若圖片顯示不全請再送出一次，若持續顯示不全表示你的性癖連電腦都受不了，應該接受治療</p>
-  <p>若圖片一直沒有顯示，表示沒這個漫畫，而且我也不會告訴你，你這個馬桶蓋</p>
-  <p>已知bug: <I><strong>圖片可能顯示不全</strong></I></p>
-  <p><strong>{{forbid}}</strong></p>
-  <input v-model='num'>
-  <button v-on:click='send' v-bind:disabled='isDisabled'>送出</button>
-  <p>{{htmls}}</p>
-  <div id='manga'>
-    <img src='/public/linkstart.PNG'>
+<body style="background-color:rgb(39, 36, 36);">
+  <div id="app">
+    <h1><font color="white">n站快速巡禮v1</font></h1>
+    <p><font color="white">我是橘色的文字</font></p>
+      <p><font color="white">請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</font></p>
+    <p><font color="white">載入需要幾秒，若圖片顯示不全請再送出一次，若持續顯示不全表示你的性癖連電腦都受不了，應該接受治療</font></p>
+    <p><font color="white">已知bug: <I><strong>可能有png/jpg混用的漫畫</strong></I></font></p>
+    <p><font color="white">目前禁止頁數超過200</font></p>
+    <p><font color="white"><strong>{{forbid}}</strong></font></p>
+    <input v-model='num'>
+    <button v-on:click='send' v-bind:disabled='isDisabled'>送出</button>
+    <p><font color="white">{{msg}}</font></p>
+    <div id='manga'>
+      <img src='/public/linkstart.PNG'>
+    </div>
   </div>
-</div>
+</body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -20,44 +23,54 @@
 new Vue({
   el: '#app',
   data: {
-    forbid: '',
+    msg: '',
     num: '',
-    htmls: '\n',
+    forbid: '',
     isDisabled: false
   },
   methods: {
       send: function(){
-          this.isDisabled = true
-          
-          if(this.num == '228922'){
-            this.forbid = '委任幹你娘'
-            return
-          }
-          axios
-            .post("/", {
-              urlNumber: this.num
-            })
-            .then(response => {
-              let imgs = document.getElementsByTagName('img')
-              if(imgs[0] != undefined){
-                for(let i=imgs.length-1; i>-1; --i){imgs[i].remove()}
-              }
+        this.msg = ''
+        this.isDisabled = true
+        
+        if(this.num == '228922'){
+          this.forbid = '委任幹你娘'
+          return
+        }
+        axios
+          .post("/", {
+            urlNumber: this.num
+          })
+          .then(response => {
+            var imgs = document.getElementsByTagName('img')
+            if(imgs[0] != undefined){
+              for(let i=imgs.length-1; i>-1; --i){imgs[i].remove()}
+            }
 
-              setTimeout(()=>{
-                let father = document.getElementById('manga')
-                for(let i=1; i<=parseInt(response.data.pages); ++i){
-                  let page = document.createElement('img')
-                  page.setAttribute('id', i.toString())
-                  page.setAttribute('src', '/public/' + this.num + '/' + i.toString() + '.' + response.data.type) 
-                  father.appendChild(page)
-                }
+            var father = document.getElementById('manga')
+            var pages = parseInt(response.data.pages)
+            var cur = 1
+
+            setTimeout(() => {
+              if(isNaN(pages)){
+                this.msg = '無此漫畫或頁數過多'
                 this.isDisabled = false
-              }, 5000)
-              
-            })
-            .catch(response => {
-              console.log(response)
-            });
+                return
+              }
+              var timer = setInterval(() => {
+                let newPage = document.createElement('img')
+                newPage.setAttribute('src', '/public/' + this.num + '/' + (cur++).toString() + '.' + response.data.type) 
+                father.appendChild(newPage)
+                if(cur > pages){
+                    clearInterval(timer)
+                }
+              }, 100)
+              this.isDisabled = false
+            }, 1000)
+          })
+          .catch(response => {
+            console.log(response)
+          });
       }
   }
 })
