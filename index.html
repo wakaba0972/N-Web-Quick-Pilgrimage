@@ -1,5 +1,5 @@
 <body style="background-color:rgb(39, 36, 36);">
-  <div id="app">
+  <div id="app" >
     <h1><font color="white">n站快速巡禮v1</font></h1>
     <p><font color="white">我是橘色的文字</font></p>
       <p><font color="white">請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</font></p>
@@ -21,6 +21,13 @@
 
 <script>
 new Vue({
+  created() {
+    window.addEventListener('keypress', (key) => {
+      if(key.which == 13){
+        this.send()
+      }
+    });
+  },
   el: '#app',
   data: {
     msg: '',
