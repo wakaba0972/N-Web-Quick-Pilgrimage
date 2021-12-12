@@ -11,7 +11,7 @@ app.use(compression())
 app.use(express.json())
 app.use('/public', express.static(__dirname + '\\public'))
 
-const download = (url, path) => {
+var download = (url, path) => {
     request(url).pipe(fs.createWriteStream(path))
 }
 
@@ -53,10 +53,8 @@ app.post('/', function(req, res){
                         pages: pages,
                         type: type
                     }   
-
                     fs.mkdir('./public/' + urlNumber, () => {
-                        fs.writeFile('./public/' + urlNumber + '/page.json', JSON.stringify(key), () => {
-                            
+                        fs.writeFile('./public/' + urlNumber + '/page.json', JSON.stringify(key), () => {     
                             let p = 1
                             let last = parseInt(pages)
                             let timer = setInterval(() => {
