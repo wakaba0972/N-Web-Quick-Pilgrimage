@@ -13,7 +13,6 @@
             send: function(){
                 axios('/img')
                 .then(res => {
-                    console.log(res.data.toString('base64'))
                     var img = document.getElementById('hi')
                     img.setAttribute('src', 'data:image/jpeg;base64, ' + res.data.toString('base64')) 
                 })

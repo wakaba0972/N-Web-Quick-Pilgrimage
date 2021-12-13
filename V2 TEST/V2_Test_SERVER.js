@@ -5,11 +5,11 @@ var fs = require("fs")
 var app = express()
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '\\aaa2.html')
+    res.sendFile(__dirname + '\\V2_Test_CLIENT.html')
 })
 
 app.get('/img', function(req, res){
-    console.log('ji')
+    console.log('hi')
     var requestSettings = {
         url: 'https://i.nhentai.net/galleries/1217339/1.jpg',
         method: 'GET',
