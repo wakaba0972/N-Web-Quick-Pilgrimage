@@ -10,7 +10,9 @@
 
 # v2-TEST<br>
 
-* ## \<UPGRADE\>改為由Client發出每頁的request :
-   Server 取得圖片二進制檔後，不儲存至本地，改為直接response至Client，整體邏輯須大幅修整，期望能改善圖片BUG<br>
-   * ### 流程構想 :
-     Client送出urlNumber --> Server解析頁數與檔案格式回傳 --> Client送出欲加載的頁數 --> Server下載得二進制檔回傳 --> Client渲染網頁
+* ## \<UPGRADE\>改為延遲載入(Lazy Loading) :
+   圖片顯示不全可能是一次request所有圖片下載不完，因此改用Lazy Loading的方式，計畫以Intersection Observer實作
+  
+* ## \<UPGRADE\>以base64編碼格式輸出圖片:
+   v1為下載圖片至伺服主機，後以Client請求圖片位址之方式取得圖片
+   v2改為直接送出base64編碼，有望效率提高
