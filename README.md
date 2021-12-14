@@ -14,5 +14,5 @@
    圖片顯示不全可能Client是一次request所有圖片下載不完，因此改用Lazy Loading的方式，計畫以Intersection Observer API實作
   
 * ## \<UPGRADE\>以base64編碼輸出圖片:
-   v1為下載圖片至伺服主機，後以Client請求圖片位址的方式取得圖片
-   v2改為直接送出圖片base64編碼，有望可以改善BUG
+   v1為下載圖片至伺服主機，後以Client請求圖片位址的方式取得圖片<br>
+   v2改為直接送出圖片base64編碼，藉此改善效率
