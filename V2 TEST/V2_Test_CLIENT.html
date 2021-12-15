@@ -1,25 +1,79 @@
-<meta charset="utf-8">
-<div id='app'>
-    <img id='hi'>
-    <button v-on:click='send'>asdasdasd</button>
-</div>
+<body style="background-color:rgb(39, 36, 36);">
+    <div id='app'>
+        <h1><font color="white">n站快速巡禮v2 Beta</font></h1>
+        <p><font color="white">請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</font></p>
+        <p><font color="white">載入需要幾秒，若圖片顯示不全表示你的性癖連電腦都受不了，應該接受治療</font></p>
+        <p><font color="white">已知bug: <I><strong>等你找出</strong></I></font></p>
+        <p><font color="white">目前禁止頁數超過100</font></p>
+        <p><font color="white"><strong>{{msg}}</strong></font></p>
+        <input v-model='num'>
+        <button v-on:click='send' v-bind:disabled='isDisabled'>Enter</button>
+        <div id='manga'>
+            <img src='/public/linkstart.PNG'>
+        </div>
+    </div>
+</body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     new Vue({
+        created() {
+            window.addEventListener('keypress', (key) => {
+                if(key.which == 13){
+                    this.send()
+                }
+            });
+        },
         el: '#app',
+        data: {
+            msg: '',
+            num: '',
+            Data: null, 
+            curPage: 0,
+            isDisabled: false
+        },
         methods: {
             send: function(){
-                axios('/img')
+                this.isDisabled = true
+
+                let imgs = document.getElementsByTagName('img')
+                for(let i=imgs.length-1; i>-1; --i) {
+                    imgs[i].remove()
+                }
+
+                axios
+                .post('/sendNumber', {urlNumber: this.num})
                 .then(res => {
-                    var img = document.getElementById('hi')
-                    img.setAttribute('src', 'data:image/jpeg;base64, ' + res.data.toString('base64')) 
+                    if(isNaN(parseInt(res.data['pages']))){
+                        this.msg = res.data
+                        this.isDisabled = false
+                        return
+                    } 
+                    this.msg = ''
+                    this.Data = res.data
+
+                    let father = document.getElementById('manga')
+                    for(let i=1; i<=this.Data['pages']; ++i){
+                        father.appendChild(document.createElement('img'))
+                    }
+                    
+                    let allImage = document.getElementsByTagName('img')
+                    setTimeout(() => {
+                        this.isDisabled = false
+                        for(let i=1; i<=this.Data['pages']; ++i){
+                            setTimeout(() => {
+                                axios('http://127.0.0.1/image?parm=' + this.Data['galleryNumber'] + '/' + i +'.' + this.Data[i])
+                                .then((res2) => {
+                                    allImage[i-1].src = 'data:image/jpeg;base64, ' + res2.data.toString('base64')
+                                })
+                            }, 1000)
+                        }
+                    }, 3000)
                 })
-                .catch(res => {
-                    console.log(res)
-                })   
+                .catch(res => console.log(res))   
             }
         }
     })
 </script>
+
