@@ -63,7 +63,7 @@
                         this.isDisabled = false
                         for(let i=1; i<=this.Data['pages']; ++i){
                             setTimeout(() => {
-                                axios('http://127.0.0.1/image?parm=' + this.Data['galleryNumber'] + '/' + i +'.' + this.Data[i])
+                                axios('/image?parm=' + this.Data['galleryNumber'] + '/' + i +'.' + this.Data[i])
                                 .then((res2) => {
                                     allImage[i-1].src = 'data:image/jpeg;base64, ' + res2.data.toString('base64')
                                 })
@@ -76,4 +76,3 @@
         }
     })
 </script>
-

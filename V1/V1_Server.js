@@ -17,19 +17,19 @@ var download = (url, path) => {
 
 app.get('/', function(req, res){
     console.log(Date() + ' ' + req.ip)
-    res.sendFile(__dirname + "\\index.html")
+    res.sendFile(__dirname + "\\V1_Client.html")
 })
 
 app.post('/', function(req, res){
     const urlNumber = req.body['urlNumber']
     console.log(Date() + ' ' + req.ip + ' : ' + urlNumber)
 
-    fs.exists('./public/' + urlNumber, function(exist){
+    fs.exists(__dirname+'\\public\\' + urlNumber, function(exist){
         if(urlNumber == ''){
             res.end('Plese Enter Something')
         }
         else if(exist){
-            fs.readFile('./public/' + urlNumber + '/page.json', (err, data) =>{
+            fs.readFile(__dirname+'\\public\\' + urlNumber + '\\page.json', (err, data) =>{
                 if (err) throw err;
                 let key = JSON.parse(data);
                 res.json(key)
@@ -53,13 +53,13 @@ app.post('/', function(req, res){
                         pages: pages,
                         type: type
                     }   
-                    fs.mkdir('./public/' + urlNumber, () => {
-                        fs.writeFile('./public/' + urlNumber + '/page.json', JSON.stringify(key), () => {     
+                    fs.mkdir(__dirname+'\\public\\' + urlNumber, () => {
+                        fs.writeFile(__dirname+'\\public\\' + urlNumber + '\\page.json', JSON.stringify(key), () => {     
                             let p = 1
                             let last = parseInt(pages)
                             let timer = setInterval(() => {
                                 download('https://i.nhentai.net/galleries/' + imgUrl + '/' + p.toString() + '.'+ type, 
-                                        './public/' + urlNumber + '/' + p.toString() + '.' + type)
+                                        __dirname+'\\public/' + urlNumber + '\\' + p.toString() + '.' + type)
                                 if(++p > last){
                                     clearInterval(timer)
                                     res.json(key)

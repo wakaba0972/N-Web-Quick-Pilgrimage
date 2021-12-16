@@ -1,0 +1,103 @@
+<body style="background-color:rgb(39, 36, 36);">
+    <div id='app' >
+        <h1><font color="white" size='6'>n站快速巡禮v2 Beta</font></h1>
+        <p><font color="white">請輸入神的語言，若不知道那是什麼請原地說出"渴歷簿汁悼喔"</font></p>
+        <p><font color="white"><I><strong>電腦版縮放頁面可能會無法正常載入ㄏ</strong></I></font></p>
+        <p><font color="white"><I><strong>貼1000頁的漫畫也不會炸服，但你應該接受治療</strong></font></p>
+        <p><font color="white"><strong>{{msg}}</strong></font></p>
+        <input v-model='num'>
+        <button v-on:click='send' v-bind:disabled='isDisabled'>Enter</button>
+        <div id='manga'>
+            <img src='/public/linkstart.PNG'>
+        </div>
+        <p id='buttom'><font color="blue">星爆氣流斬</font></p>
+    </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    var v = new Vue({
+        created() {
+            window.addEventListener('keypress', (key) => {
+                if(key.which == 13){
+                    this.send()
+                }
+            });
+        },
+        el: '#app',
+        data: {
+            msg: '',
+            num: '',
+            Data: null, 
+            curPage: 1,
+            isDisabled: false,
+            canLoad: false
+        },
+        methods: {
+            send: function(){
+                this.isDisabled = true
+
+                let imgs = document.getElementsByTagName('img')
+                for(let i=imgs.length-1; i>-1; --i) {
+                    imgs[i].remove()
+                }
+
+                axios
+                .post('/sendNumber', {urlNumber: this.num})
+                .then(res => {
+                    if(isNaN(parseInt(res.data['pages']))){
+                        this.msg = res.data
+                        this.isDisabled = false
+                        return
+                    } 
+                    else{
+                        for(let i=1; i<=res.data['pages']; ++i){
+                            father.appendChild(document.createElement('img'))
+                        }
+                    }
+                    this.msg = ''
+                    this.curPage = 1
+                    this.Data = res.data
+                    this.isDisabled = true
+
+                    getFrame()
+                })
+                .catch(res => console.log(res))   
+            }
+        }
+    })
+</script>
+<script>
+    var father = document.getElementById('manga')
+    var target = document.getElementById('buttom')
+    var allImage = document.getElementsByTagName('img')
+
+    function getFrame(){
+        v.canLoad = false
+        v.isDisabled = false
+        if(v.curPage > v.Data['pages']) return
+
+        for(let i = v.curPage; i < v.curPage+5 && i <= v.Data['pages']; ++i){
+            axios('/image?parm=' + v.Data['galleryNumber'] + '/' + i +'.' + v.Data[i])
+            .then((res) => {
+                allImage[i-1].src = 'data:image/jpeg;base64, ' + res.data.toString('base64')
+            })
+        }
+
+        v.curPage += 5
+
+        setTimeout(() => {
+            v.canLoad = true
+        }, 1500)
+    }
+
+
+    function callback(entry) {
+        if(entry[0].isIntersecting && v.canLoad) getFrame()
+    }
+
+    var observer = new IntersectionObserver(callback)
+    observer.observe(target)
+</script>
+
