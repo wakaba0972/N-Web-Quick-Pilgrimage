@@ -4,11 +4,11 @@ var cheerio = require("cheerio")
 
 var app = express()
 app.use(express.json())
-app.use('/public', express.static(__dirname + '\\public'))
+app.use('/public', express.static('public'))
 
 app.get('/', (req, res) => {
     console.log(Date() + ' ' + req.ip)
-    res.sendFile(__dirname + '\\client.html')
+    res.sendFile(__dirname + '/client.html')
 })
 
 app.post('/sendNumber', function(req, res){
