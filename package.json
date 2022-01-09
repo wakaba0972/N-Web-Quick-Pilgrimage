@@ -4,7 +4,7 @@
   "description": "* ## \\<BUG\\>圖片下載、顯示不全 :\r    可能是請求過於頻繁被擋，或是太多request、fs流處理不完，因此用setInterval設置間隔時間，但仍有問題<br>",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
