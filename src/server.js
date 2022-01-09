@@ -7,12 +7,13 @@ app.use(express.json())
 app.use('/public', express.static(__dirname + '\\public'))
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '\\V2_Test_CLIENT.html')
+    console.log(Date() + ' ' + req.ip)
+    res.sendFile(__dirname + '\\client.html')
 })
 
 app.post('/sendNumber', function(req, res){
     const urlNumber = req.body['urlNumber']
-    console.log(Date.now() + ' ' + req.ip + ' : ' + urlNumber)
+    console.log(Date() + ' ' + req.ip + ' : ' + urlNumber)
 
     if(isNaN(parseInt(urlNumber))){
         res.end('Please Enter Valid Number')
@@ -25,9 +26,6 @@ app.post('/sendNumber', function(req, res){
 
         if($('h1').text() == '404 – Not Found'){
             res.end('No Such Manga')
-        }
-        else if(pages > 100){
-            res.end('Too Many Pages!')
         }
         else{
             let imgElems = $('.lazyload')
@@ -52,11 +50,10 @@ app.get('/image', (req, res) => {
         encoding: 'base64'
     };
     request(requestSettings, (err, res2, data) => {
-        res.type('jpeg')
         res.end(data)
     })
 
 })
 
-
-app.listen(80)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT)

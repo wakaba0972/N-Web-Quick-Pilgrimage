@@ -1,0 +1,28 @@
+{
+  "name": "n-web",
+  "version": "1.0.0",
+  "description": "* ## \\<BUG\\>圖片下載、顯示不全 :\r    可能是請求過於頻繁被擋，或是太多request、fs流處理不完，因此用setInterval設置間隔時間，但仍有問題<br>",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wakaba0972/N-Web-Quick-Pilgrimage.git"
+  },
+  "author": "Wakaba Ame",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wakaba0972/N-Web-Quick-Pilgrimage/issues"
+  },
+  "homepage": "https://github.com/wakaba0972/N-Web-Quick-Pilgrimage#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "express": "^4.17.2",
+    "request": "^2.88.2"
+  },
+  "engines": {
+    "node": "14.18.1",
+    "npm": "6.14.15"
+  }
+}
