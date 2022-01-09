@@ -62,8 +62,9 @@
                     this.curPage = 1
                     this.Data = res.data
                     this.isDisabled = true
+
+                    getFrame()
                 })
-                .then(()=> getFrame())
                 .catch(res => console.log(res))   
             }
         }
@@ -86,16 +87,18 @@
 
         let count = 0
         for(let i = v.curPage; i < v.curPage+5 && i <= v.Data['pages']; ++i){
-            axios('/image?parm=' + v.Data['galleryNumber'] + '/' + i +'.' + v.Data[i])
-            .then((res) => {
-                allImage[i-1].src = 'data:image/jpeg;base64, ' + res.data.toString('base64')
-                if(++count == 5 || i > v.Data['pages']){
-                    v.curPage += 5
-                    v.canLoad = true
-                    observer.observe(allImage[v.curPage-3])
-                    observer.unobserve(allImage[v.curPage-8])
-                }
-            })
+            setTimeout(()=> {
+                axios('/image?parm=' + v.Data['galleryNumber'] + '/' + i +'.' + v.Data[i])
+                .then((res) => {
+                    allImage[i-1].src = 'data:image/jpeg;base64, ' + res.data.toString('base64')
+                    if(++count == 5 || i > v.Data['pages']){
+                        v.curPage += 5
+                        v.canLoad = true
+                        observer.observe(allImage[v.curPage-3])
+                        observer.unobserve(allImage[v.curPage-8])
+                    }
+                })
+            }, 200)
         }
     }
 </script>
