@@ -62,9 +62,8 @@
                     this.curPage = 1
                     this.Data = res.data
                     this.isDisabled = true
-
-                    getFrame()
                 })
+                .then(()=> getFrame())
                 .catch(res => console.log(res))   
             }
         }
